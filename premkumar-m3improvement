@@ -1,0 +1,146 @@
+question1
+app,component.html
+<div class="panel panel-default" style="width:900px">
+  <div class="panel-body">
+  <div class="card" style="margin-left:400px; margin-top:50px">
+    <img [src]="imageLocation" width="100%" height="50%" style="padding:15px">
+    <div class="card-body">
+      <h4>Category :{{productTitle}}</h4>
+      <h4>Price :{{productPrice}}</h4>
+      <h4>Stock :{{stock}}</h4>
+    </div>
+    <button type="button" style="width:150px;margin-left: 180px;margin-bottom: 20px; " class="btn btn-success">Add to cart</button>
+  </div>
+  </div>
+  </div>
+  app.component.ts
+  import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  
+ title='MOBILE SHOPPING';
+ productTitle:string="SAMSUNG";
+ productPrice:number=40000;
+ stock:number=5;
+ imageLocation:string='../assets/img/samsung.jpg';
+}
+styles.css
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+
+question3
+app.component.html
+<hr/>
+<div class="container">
+  <div class="panel panel-primary" >
+<h3  style="text-align: center;">PRODUCT DETAILS</h3>
+
+  <form [formGroup]="myform" (ngSubmit)="store()">
+    <div class="text-center">
+    <div class="form-group" >
+      <label for="pname">Product Name</label>
+      <input type="text" class="form-control" id="pname"  formControlName="pname">
+      <small style="color:red" *ngIf="pname && pname.invalid && pname.touched">*Name is Required</small>
+      </div> 
+    </div>
+    <div class="text-center">
+    <div class="form-group">
+      <label for="pbrand">Product Brand</label>
+      <input type="text" class="form-control" id="pbrand" formControlName="pbrand">
+      <small style="color:red" *ngIf="pbrand && pbrand.invalid && pbrand.touched">*Brand is Required</small>
+      </div>
+    </div>
+    <div class="text-center">
+    <div class="form-group">
+      <label for="pprice">Product Price</label>
+      <input type="text" class="form-control" id="pprice" formControlName="pprice">
+      <small style="color:red" *ngIf="pprice && pprice.invalid && pprice.touched">*Price is Required</small>
+    </div>
+     </div>
+    
+     <div class="text-center">
+    <button class="btn btn-primary" [disabled]="myform.invalid">Store</button>
+  </div>
+  </form>
+ </div>
+ </div>
+
+ <div style = "margin-top: 10px;">
+  <div class="productdetails">
+    <table class="table">
+      <thead class="thread-light">
+        <tr>
+          <th>PRODUCT NAME</th>
+          <th>PRODUCT BRAND</th>
+          <th>PRODUCT PRICE</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let pro of products">
+          <td>{{pro.name}}</td>
+          <td>{{pro.brand}}</td>
+          <td>{{pro.price}}</td>
+    </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<hr/>
+app.component.ts
+import { Component } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Product} from './product.ts' 
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+ myform:FormGroup;
+  products: Product[]=[];
+  constructor(){
+    this.myform=new FormGroup({
+      pname:new FormControl(null,[Validators.required]),
+      pbrand:new FormControl(null,[Validators.required]),
+      pprice:new FormControl(null,[Validators.required,Validators.pattern('[0-9]+')])
+    });
+  }
+
+  store(){
+    this.products.push(new Product(this.myform.value.pname,this.myform.value.pbrand,this.myform.value.pprice));
+    console.log(this.products) 
+    //this.myform.reset();
+  }
+
+  get pname(){
+    return this.myform.get('pname');
+  }
+
+  get pbrand(){
+    return this.myform.get('pbrand');
+  }
+
+  get pprice(){
+    return this.myform.get('pprice');
+  }
+}
+product.ts
+export class Product{
+    
+  
+    name:string;
+    brand:string;
+    price:number;
+
+    constructor(name,brand,price){
+        this.name=name;
+        this.brand=brand;
+        this.price=price;
+        
+    }
+}
